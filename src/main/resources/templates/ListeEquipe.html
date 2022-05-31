@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="navbar" xmlns:sec=https://www.thymeleaf.org/thymeleaf-extras-springsecurity5
+>
+<link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.0.0/css/bootstrap.min.css" />
+<head>
+<meta charset="utf-8">
+<title>Liste des Equipes</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div layout:fragment="Mynavbar">
+    <div class="container mt-5">
+    <div class="card">
+     <div class="card-header">
+    <h3> Liste des Equipes</h3>
+     </div>
+     <div class="card-body"> 
+      <form class="search-box" name="searchForm" method="GET">
+                    </aside>
+                    <div class="form-group"> 
+                    <input type="search" id="myInput" class="form-control" placeholder="Chercher" /><i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+                    </aside>
+                </form>
+                <br>
+     <table id="myTable" class="table table-striped" style="text-align: center;">
+     <tr>
+     <th>ID</th><th>Nom Equipe</th><th>Date Fondation</th><th>Pays D'origine</th><th sec:authorize="hasRole('ADMIN')" colspan="2">Actions</th>
+     </tr> 
+     <tr th:each="c:${equipes}">
+     <td th:text="${c.idEquipe}"></td>
+     <td th:text="${c.nomEquipe}"></td>
+     <td th:text="${c.fondation}"></td>
+        <td th:text="${c.paysOrigineEquipe}"></td>
+     <td sec:authorize="hasRole('ADMIN')"><a class="btn btn-danger" onclick="return confirm('Etes-vous sur ?')" th:href="@{supprimerEquipe(id=${c.idEquipe})}">Supprimer</a></td>
+   <td sec:authorize="hasRole('ADMIN')"><a class="btn btn-success" th:href="@{modifierEquipe(id=${c.idEquipe})}">Editer</a></td>
+     </tr> 
+     </table>
+     <ul class="nav nav-pills">
+     <li th:each="page,status:${pages}">
+     <a th:class="${status.index==currentPage?'btn btn-primary':'btn' }"
+     th:href="@{ ListeEquipe(page=${status.index}, size=${size} ) }"
+     th:text="${status.index }"></a>
+     </li>
+     </ul>
+     
+     </div>
+    </div>
+    </div>
+    </div>
+    </body>
+</html>

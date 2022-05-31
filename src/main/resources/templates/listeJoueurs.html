@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="navbar" xmlns:sec=https://www.thymeleaf.org/thymeleaf-extras-springsecurity5>
+<head>
+<meta charset="utf-8">
+<title>Liste des Joueurs</title>
+<link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.0.0/css/bootstrap.min.css" />
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div layout:fragment="Mynavbar">
+    <div class="container mt-5">
+    <div class="card">
+     <div class="card-header">
+     <h3>Liste des Joueurs</h3>
+     </div>
+     <div class="card-body"> 
+     <table align='center' width='100%'><tr><td>
+                <form class="search-box" name="searchForm" th:action="@{search}" method="GET">
+                    </aside>
+                    <div th:if="${mode!='Searchequipe'}">
+                    <div class="form-group"> 
+                    <label class="control-label">Chercher Par Nom Joueur :</label>
+                    <input type="search" id="myInput" name='nom' class="form-control" placeholder="Chercher Nom Joueur..." th:value="${nom}" />
+                    </div></div>
+                    </aside>
+                </form>
+                </td>
+                <td></td> <td></td> <td></td>
+             <td>
+              <form class="search-box" name="searchFormEquipe" th:action="@{searchEquipe}" method="GET">
+                    </aside> 
+                 
+                    <div class="form-group"> 
+<label class="control-label">Chercher Par Equipe :</label>
+ <select name="equipe" class="form-control" th:if= "${!#strings.isEmpty(equipes)}"  onchange="this.form.submit()" required>  
+  <option th:value="0" selected>-- Choisir Equipe Pour Chercher --</option>
+ <option th:each="c : ${equipes}" th:value="${c.idEquipe}" th:text="${c.nomEquipe}"></option>
+ </select>
+ 
+                    </div>
+       
+                    </aside>
+                </form>
+             </td></tr></table>
+             
+     <table id="myTable" class="table table-striped" style="text-align: center;">
+     <tr>
+     <th>ID</th><th>Nom Joueur</th><th>Prix</th><th>Date Naissance</th><th>Equipe</th><th sec:authorize="hasRole('ADMIN')" colspan="2">Actions</th>
+     </tr> 
+     <tr th:each="p:${joueurs}">
+     <td th:text="${p.idJoueur}"></td>
+     <td th:text="${p.nomJoueur}"></td>
+     <td th:text="${p.prixJoueur}"></td> 
+   
+     <td th:text="${p.dateCreation}"></td> 
+          <td th:if= "${!#strings.isEmpty(p.equipe)}" th:text="${p.equipe.nomEquipe}"></td>  
+  <td th:if= "${#strings.isEmpty(p.equipe)}" th:text="${'Pas de Equipeégorie'}"></td>
+    <td sec:authorize="hasRole('ADMIN')" ><a class="btn btn-danger"
+onclick="return confirm('Etes-vous sûr ?')"
+th:href="@{supprimerJoueur(id=${p.idJoueur}, 
+page=${currentPage},size=${size})}">Supprimer</a>
+</td>
+   <td sec:authorize="hasRole('ADMIN')"><a class="btn btn-success"
+th:href="@{modifierJoueur(id=${p.idJoueur})}">Editer</a></td>
+     </tr> 
+     </table>
+     <ul class="nav nav-pills">
+     <li th:each="page,status:${pages}">
+     <a th:class="${status.index==currentPage?'btn btn-primary':'btn' }"
+     th:href="@{ ListeJoueurs(page=${status.index}, size=${size} ) }"
+     th:text="${status.index }"></a>
+     </li>
+     </ul>
+     <hr>
+      <center> <div th:if="${mode=='Searchequipe'}">
+      <a th:href="@{ListeJoueurs}" ><button type="button" class="btn btn-primary">Retour</button></a>
+          </div></center>
+          
+           <center> <div th:if="${mode=='SearchNomP'}">
+      <a th:href="@{ListeJoueurs}" ><button type="button" class="btn btn-primary">Retour</button></a>
+          </div></center>
+     </div>
+    </div>
+    </div>
+    </div>
+        
+    </body>
+</html>
